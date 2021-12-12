@@ -88,7 +88,6 @@ public class Player {
     public void setClub(String club) {
         this.club = club;
     }
-<<<<<<< HEAD
 
     @Override
     public String toString() {
@@ -103,6 +102,4 @@ public class Player {
                 ", club='" + club + '\'' +
                 '}';
     }
-=======
->>>>>>> a131fe2a030421de0cacb5976992946d8cfa7eeb
 }

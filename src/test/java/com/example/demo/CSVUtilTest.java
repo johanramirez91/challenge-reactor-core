@@ -1,11 +1,7 @@
 package com.example.demo;
 
 import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvException;
-<<<<<<< HEAD
 import org.junit.jupiter.api.DisplayName;
-=======
->>>>>>> a131fe2a030421de0cacb5976992946d8cfa7eeb
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -67,24 +63,31 @@ public class CSVUtilTest {
         assert listFilter.block().size() == 322;
     }
 
-<<<<<<< HEAD
     @Test
     @DisplayName("Filtro jugadores mayores de 34 años")
     void reactive_filtrarJugadoresMayoresDe34(){
         List<Player> playerList = CsvUtilFile.getPlayers();
         Flux<Player> fluxList = Flux.fromStream(playerList.parallelStream()).cache();
-        Mono<Map<Integer, Collection<Player>>> listFilter = fluxList
-                .filter(player -> player.age >= 34)
+        Mono<Map<String, Collection<Player>>> listFilter = fluxList
+                .filter(player -> player.age > 34)
                 .map(player -> {
                     player.name = player.name.toUpperCase(Locale.ROOT);
                     return player;
-                }).distinct()
-                .collectMultimap(Player::getAge);
+                })
+                .buffer(100)
+                .flatMap(playerA -> fluxList
+                        .filter(playerB -> playerA.stream()
+                                .anyMatch(a ->  a.club.equals(playerB.club)))
+                )
+                .distinct()
+                .collectMultimap(Player::getClub);
         //System.out.println(listFilter.block().size());
-        assert listFilter.block().size() == 11;
+        assert listFilter.block().size() == 322;
     }
-=======
 
+    
 
->>>>>>> a131fe2a030421de0cacb5976992946d8cfa7eeb
+    private Integer defaultAge(Integer integer) {
+        return integer == null ? 0 : integer;
+    }
 }
