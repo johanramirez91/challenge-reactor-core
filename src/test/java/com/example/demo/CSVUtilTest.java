@@ -1,6 +1,8 @@
 package com.example.demo;
+import com.example.demo.service.PlayerService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.*;
@@ -8,10 +10,20 @@ import java.util.*;
 
 class CSVUtilTest {
 
+    @Autowired
+    PlayerService playerService;
+
     @Test
     void converterData() {
         List<Player> list = CsvUtilFile.getPlayers();
         assert list.size() == 18207;
+    }
+
+    @Test
+    void converterDatamongo(){
+        Flux<Player> listFlux = playerService.listAll();
+        var fluxLenght = listFlux.count();
+        assert fluxLenght.block() == 18207;
     }
 
     @Test
